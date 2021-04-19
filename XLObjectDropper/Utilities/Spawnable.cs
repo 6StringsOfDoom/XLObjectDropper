@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,6 +30,25 @@ namespace XLObjectDropper.Utilities
 			MenuText = menuText;
 
 			PrefabLayerInfo = prefab.transform.GetObjectLayers();
+
+			var pool = PhotonNetwork.PrefabPool as DefaultPool;
+			if (pool?.ResourceCache != null)
+			{
+				if (!pool.ResourceCache.ContainsKey(prefab.name))
+					pool.ResourceCache.Add(prefab.name, prefab);
+			}
+
+			var photonView = prefab.AddComponent<PhotonView>();
+			photonView.Synchronization = ViewSynchronization.UnreliableOnChange;
+			photonView.ObservedComponents = new List<Component>();
+
+			var photonTransformView = prefab.AddComponent<PhotonTransformView>();
+			photonView.ObservedComponents.Add(photonTransformView);
+
+			if (prefab.GetComponentInChildren<Rigidbody>(true) != null)
+			{
+				photonView.ObservedComponents.Add(prefab.AddComponent<PhotonRigidbodyView>());
+			}
 
 			InitializeSettings();
 

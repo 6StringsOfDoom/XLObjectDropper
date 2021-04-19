@@ -1,4 +1,5 @@
 ﻿using GameManagement;
+using Photon.Pun;
 using Rewired;
 using System.Linq;
 using UnityEngine;
@@ -201,7 +202,7 @@ namespace XLObjectDropper.Controllers
 
 	        foreach (var spawnable in SpawnableManager.SpawnedObjects)
 	        {
-		        var meshRenderer = spawnable.SpawnedInstance.GetComponent<MeshRenderer>();
+		        var meshRenderer = spawnable?.SpawnedInstance?.GetComponent<MeshRenderer>();
 
 		        bool hasChildren = spawnable.SpawnedInstance.transform.childCount > 0;
 				bool isOnCorrectLayer = spawnable.SpawnedInstance.layer == LayerMask.NameToLayer("Grindable") || spawnable.SpawnedInstance.layer == LayerMask.NameToLayer("Coping");
@@ -603,10 +604,26 @@ namespace XLObjectDropper.Controllers
 		{
 			UISounds.Instance?.PlayOneShotSelectMajor();
 
-			var newObject = Instantiate(SelectedObject, position ?? SelectedObject.transform.position, rotation ?? SelectedObject.transform.rotation);
-			newObject.SetActive(true);
+			GameObject newObject = null;
 
 			var spawnable = SelectedObject.GetSpawnable();
+			if (PhotonNetwork.InRoom)
+			{
+				if (ExistingObject)
+				{
+					spawnable = SelectedObject.GetSpawnableFromSpawned();
+					PhotonNetwork.Destroy(SelectedObject);
+				}
+				
+				newObject = PhotonNetwork.Instantiate(spawnable.Prefab.name, position ?? SelectedObject.transform.position, rotation ?? SelectedObject.transform.rotation);
+				newObject.transform.localScale = SelectedObject.transform.localScale;
+				
+			}
+			else
+				newObject = Instantiate(SelectedObject, position ?? SelectedObject.transform.position, rotation ?? SelectedObject.transform.rotation);
+
+			if (newObject == null) return;
+
 			newObject.transform.ChangeLayersRecursively(spawnable.PrefabLayerInfo);
 
 			if (ExistingObject)
@@ -701,11 +718,25 @@ namespace XLObjectDropper.Controllers
 			}
 
 			UISounds.Instance?.PlayOneShotSelectMajor();
-			DestroyImmediate(HighlightedObject);
+
+			if (PhotonNetwork.InRoom)
+			{
+				PhotonNetwork.Destroy(HighlightedObject);	
+			}
+			else
+			{
+				DestroyImmediate(HighlightedObject);
+			}
 		}
 
 		private void SelectObject()
 		{
+			if (PhotonNetwork.InRoom)
+			{
+				var photonView = HighlightedObject.GetComponent<PhotonView>();
+				if (!photonView.IsMine) return;
+			}
+
 			UISounds.Instance?.PlayOneShotSelectMajor();
 
 			JumpToObject(HighlightedObject.transform);
@@ -714,6 +745,7 @@ namespace XLObjectDropper.Controllers
 			SelectedObjectOriginalRotation = HighlightedObject.transform.rotation;
 
 			SelectedObject = HighlightedObject;
+
 			HighlightedObject = null;
 			ExistingObject = true;
 

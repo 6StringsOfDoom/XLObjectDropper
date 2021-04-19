@@ -54,6 +54,9 @@
     <Reference Include="Photon3Unity3D">
       <HintPath>..\..\..\MCBTay\XLMenuMod\XLMenuMod\References\Photon3Unity3D.dll</HintPath>
     </Reference>
+    <Reference Include="PhotonUnityNetworking">
+      <HintPath>References\PhotonUnityNetworking.dll</HintPath>
+    </Reference>
     <Reference Include="Rewired_Core">
       <HintPath>References\Rewired_Core.dll</HintPath>
       <Private>False</Private>
