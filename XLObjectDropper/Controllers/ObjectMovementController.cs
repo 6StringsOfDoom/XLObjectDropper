@@ -628,29 +628,10 @@ namespace XLObjectDropper.Controllers
 			UpdateRigidbodySettings(spawnable, newObject);
 			ToggleRigidBodies(newObject, true);
 
-			//TODO: Come back to this!!
-			//if (newObject.GetComponentInChildren<Rigidbody>(true) != null)
-			//{
-			//	ReplayRecorder.Instance.RecordedTransforms.Add(newObject.transform);
-
-			//	var traverseReplayRecorder = Traverse.Create(ReplayRecorder.Instance);
-			//	traverseReplayRecorder.Field("transformsWithRigidbody").SetValue(ReplayRecorder.Instance
-			//		.RecordedTransforms
-			//		.Select((t, i) =>
-			//		   new Tuple<Transform, int>(t, i))
-			//		.Where(t =>
-			//		   t.Item1.GetComponent<Rigidbody>() != null)
-			//		.Select(t => t.Item2)
-			//		.ToArray());
-
-			//	traverseReplayRecorder.Field("cachedPositions").SetValue(new Vector3[traverseReplayRecorder
-			//		.Field("transformsWithRigidbody").GetValue<int[]>().Length]);
-
-			//	traverseReplayRecorder.Field("cachedRotations").SetValue(new Quaternion[traverseReplayRecorder
-			//		.Field("transformsWithRigidbody").GetValue<int[]>().Length]);
-
-			//	ReplayEditorController.Instance.playbackController.playbackTransforms.Add(newObject.transform);
-			//}
+			if (newObject.GetComponentInChildren<Rigidbody>(true) != null)
+			{
+				newObject.AddComponent<RigidbodyObjectTracker>();
+			}
 
 			if (disablePreview)
 			{

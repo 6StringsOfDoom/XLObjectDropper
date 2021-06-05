@@ -58,6 +58,9 @@
       <HintPath>References\Rewired_Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="SkaterXL.Data">
+      <HintPath>..\..\..\MCBTay\XLMenuMod\XLMenuMod\References\SkaterXL.Data.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
@@ -207,6 +210,8 @@
     <Compile Include="Utilities\DebugUtilities.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\LayerInfo.cs" />
+    <Compile Include="Utilities\RigidbodyObjectTracker.cs" />
+    <Compile Include="Utilities\RigidbodyReplayInfo.cs" />
     <Compile Include="Utilities\RuntimePreviewGenerator.cs" />
     <Compile Include="Utilities\SaveManager.cs" />
     <Compile Include="Settings.cs" />
