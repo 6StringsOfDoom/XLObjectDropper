@@ -48,5 +48,16 @@ namespace XLObjectDropper.GameManagement
 
 			GameStateMachine.Instance.SemiTransparentLayer.SetActive(true);
 		}
+
+		public override void OnUpdate()
+		{
+			base.OnUpdate();
+
+			if (Input.GetKeyDown(KeyCode.Escape))
+			{
+				PromptController.Instance.startPrompt.DisablePrompt();
+				RequestTransitionTo(typeof(PauseState));
+			}
+		}
 	}
 }
