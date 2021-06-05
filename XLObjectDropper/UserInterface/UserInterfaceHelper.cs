@@ -58,12 +58,13 @@ namespace XLObjectDropper.UserInterface
 			if (menuButtons != null && menuButtons.Any())
 			{
 				GameStateMachine.Instance.gameObject.AddComponent<ObjectDropperState>();
+				
+				var exitButton = menuButtons.LastOrDefault();
 
-				var buttonToClone = menuButtons.ElementAt(0);
-
-				ObjectDropperButton = Object.Instantiate(buttonToClone, buttonToClone.transform.parent);
-
+				ObjectDropperButton = Object.Instantiate(exitButton, exitButton.transform.parent);
 				if (ObjectDropperButton == null) return;
+
+				exitButton.transform.SetAsLastSibling();
 
 				ObjectDropperButton.Label.SetText("Object Dropper");
 				ObjectDropperButton.gameObject.SetActive(true);
